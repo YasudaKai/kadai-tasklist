@@ -10,5 +10,6 @@
        </form>
 
 
+       <a href="${pageContext.request.contextPath}/index">一覧に戻る</a>
     </c:param>
 </c:import>
