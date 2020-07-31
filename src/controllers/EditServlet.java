@@ -41,8 +41,10 @@ public class EditServlet extends HttpServlet {
         request.setAttribute("tasklist", t);
         request.setAttribute("_token", request.getSession().getId());
 
-
-        request.getSession().setAttribute("tasklist_id", t.getId());
+        if(t != null){
+            
+            request.getSession().setAttribute("tasklist_id", t.getId());
+        }
 
 
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasklists/edit.jsp");
