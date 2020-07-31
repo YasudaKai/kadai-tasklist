@@ -2,8 +2,10 @@ package controllers;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Tasklist;
+import models.validators.TasklistValidator;
 import utils.DBUtil;
 
 /**
@@ -48,6 +51,20 @@ public class UpdateServlet extends HttpServlet {
             t.setUpdated_at(currentTime);
 
 
+            List<String> errors = TasklistValidator.validate(t);
+            if(errors != null){
+                em.close();
+
+
+                request.setAttribute("tasklist", t);
+                request.setAttribute("_token", request.getSession().getId());
+                request.setAttribute("errors", errors);
+
+
+                RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasklists/edit.jsp");
+                rd.forward(request, response);
+            }else{
+
             em.getTransaction().begin();
             em.getTransaction().commit();
             request.getSession().setAttribute("flush", "更新が完了しました");
@@ -58,8 +75,10 @@ public class UpdateServlet extends HttpServlet {
 
 
             response.sendRedirect(request.getContextPath() + "/index");
-        }
 
+
+            }
+        }
 
 
 
